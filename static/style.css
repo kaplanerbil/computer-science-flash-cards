@@ -16,6 +16,16 @@ textarea {
     width: 100%;
 }
 
+.gfg {
+    width:auto;
+    text-align:center;
+    padding:20px;
+}
+img {
+    max-width:100%;
+    height:auto;
+}
+
 .alignMiddle {
     height: 20em;
     display: table-cell;

@@ -108,11 +108,12 @@ def add_card():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     db = get_db()
-    db.execute('INSERT INTO cards (type, front, back, imageBase64Back) VALUES (?, ?, ?, ?)',
+    db.execute('INSERT INTO cards (type, front, back, imageBase64Back, imageBase64Front) VALUES (?, ?, ?, ?, ?)',
                [request.form['type'],
                 request.form['front'],
                 request.form['back'],
-                request.form['imageBase64Back']
+                request.form['imageBase64Back'],
+                request.form['imageBase64Front']
                 ])
     db.commit()
     flash('New card was successfully added.')
@@ -139,7 +140,7 @@ def edit(card_id):
         return redirect(url_for('login'))
     db = get_db()
     query = '''
-        SELECT id, type, front, back, imageBase64Back, known
+        SELECT id, type, front, back, imageBase64Back, imageBase64Front, known
         FROM cards
         WHERE id = ?
     '''
@@ -230,7 +231,7 @@ def get_card(type):
 
     query = '''
       SELECT
-        id, type, front, back, imageBase64Back, known
+        id, type, front, back, imageBase64Back, imageBase64Front, known
       FROM cards
       WHERE
         type = ?

@@ -30,6 +30,11 @@
                     <div class="alignContainer">
                         <div class="alignMiddle frontText">
                             <h3 class="text-center">{{ card.front }}</h3>
+                            {% if card.imageBase64Front != None %}
+                            <div class = "gfg">
+                                <img src="{{ card.imageBase64Front }}">
+                            </div>
+                            {%  endif  %}
                         </div>
                     </div>
                 </div>
@@ -39,9 +44,6 @@
                     <div class="alignContainer">
 <!--                        <img class="alignMiddle frontText">-->
                             {% if card.type == 1 %}
-                                {% if card.imageBase64Back != None %}
-                                <img src="{{ card.imageBase64Back }}">
-                                {%  endif  %}
                                 {% if short_answer %}
                                     <div class="text-center largerText">
                                 {% endif %}
@@ -49,6 +51,11 @@
                                 {% if short_answer %}
                                     </div>
                                 {% endif %}
+                                {% if card.imageBase64Back != None %}
+                                <div class = "gfg">
+                                    <img src="{{ card.imageBase64Back }}">
+                                </div>
+                                {%  endif  %}
                             {% else %}
                                 <pre><code>{{ card.back|escape }}</code></pre>
                             {% endif %}

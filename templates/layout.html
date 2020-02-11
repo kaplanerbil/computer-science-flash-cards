@@ -48,8 +48,11 @@
         }*/
 
  document.addEventListener("DOMContentLoaded", function() {
-     var pasteTarget = document.getElementById("pasteTargetBack");
-     pasteTarget.addEventListener("paste", handlePaste);
+     var pasteTargetBack = document.getElementById("pasteTargetBack");
+     pasteTargetBack.addEventListener("paste", handlePasteBack);
+
+     var pasteTargetFront = document.getElementById("pasteTargetFront");
+     pasteTargetFront.addEventListener("paste", handlePasteFront);
      // pasteTarget.addEventListener("dragenter", handleDragEnter);
  });
 /*
@@ -59,17 +62,24 @@
      e.preventDefault();
  }*/
 
- function handlePaste(e) {
-     // use event.originalEvent.clipboard for newer chrome versions
-     var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
-     console.log(JSON.stringify(items)); // will give you the mime types
-     // find pasted image among pasted items
-     var blob = null;
-     for (var i = 0; i < items.length; i++) {
-         if (items[i].type.indexOf("image") === 0) {
-             blob = items[i].getAsFile();
-         }
+ function handlePasteFront(e) {
+     var blob = getFile(event);
+
+     // load image if there is a pasted image
+     if (blob !== null) {
+         var reader = new FileReader();
+         reader.onload = function(event) {
+             console.log(event.target.result); // data url!
+             document.getElementById("pasteTargetFront").style.display = 'none';
+             document.getElementById("pastedImageFront").src = event.target.result;
+             document.getElementById("imageBase64Front").value = event.target.result;
+         };
+         reader.readAsDataURL(blob);
      }
+ }
+
+ function handlePasteBack(e) {
+     var blob = getFile(event);
 
      // load image if there is a pasted image
      if (blob !== null) {
@@ -84,6 +94,19 @@
      }
  }
 
+ function getFile(event){
+     // use event.originalEvent.clipboard for newer chrome versions
+     var items = (event.clipboardData  || event.originalEvent.clipboardData).items;
+     console.log(JSON.stringify(items)); // will give you the mime types
+     // find pasted image among pasted items
+     var blob = null;
+     for (var i = 0; i < items.length; i++) {
+         if (items[i].type.indexOf("image") === 0) {
+             blob = items[i].getAsFile();
+         }
+     }
+     return blob;
+ }
     </script>
 </head>
 <body>
