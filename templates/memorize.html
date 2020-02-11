@@ -37,8 +37,11 @@
             <div class="panel panel-primary cardBack">
                 <div class="panel-body">
                     <div class="alignContainer">
-                        <div class="alignMiddle frontText">
+<!--                        <img class="alignMiddle frontText">-->
                             {% if card.type == 1 %}
+                                {% if card.imageBase64Back != None %}
+                                <img src="{{ card.imageBase64Back }}">
+                                {%  endif  %}
                                 {% if short_answer %}
                                     <div class="text-center largerText">
                                 {% endif %}

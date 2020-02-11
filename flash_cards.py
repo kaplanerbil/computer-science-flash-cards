@@ -49,10 +49,10 @@ def close_db(error):
 
 # Uncomment and use this to initialize database, then comment it
 #   You can rerun it to pave the database and start over
-# @app.route('/initdb')
-# def initdb():
-#     init_db()
-#     return 'Initialized the database.'
+@app.route('/initdb')
+def initdb():
+        init_db()
+        return 'Initialized the database.'
 
 
 @app.route('/')
@@ -108,15 +108,30 @@ def add_card():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     db = get_db()
-    db.execute('INSERT INTO cards (type, front, back) VALUES (?, ?, ?)',
+    db.execute('INSERT INTO cards (type, front, back, imageBase64Back) VALUES (?, ?, ?, ?)',
                [request.form['type'],
                 request.form['front'],
-                request.form['back']
+                request.form['back'],
+                request.form['imageBase64Back']
                 ])
     db.commit()
     flash('New card was successfully added.')
     return redirect(url_for('cards'))
 
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    # db = get_db()
+    # db.execute('INSERT INTO cards (type, front, back) VALUES (?, ?, ?)',
+    #            [request.form['type'],
+    #             request.form['front'],
+    #             request.form['back']
+    #             ])
+    # db.commit()
+    flash('New card was successfully added.')
+    return redirect(url_for('cards'))
 
 @app.route('/edit/<card_id>')
 def edit(card_id):
@@ -124,7 +139,7 @@ def edit(card_id):
         return redirect(url_for('login'))
     db = get_db()
     query = '''
-        SELECT id, type, front, back, known
+        SELECT id, type, front, back, imageBase64Back, known
         FROM cards
         WHERE id = ?
     '''
@@ -215,7 +230,7 @@ def get_card(type):
 
     query = '''
       SELECT
-        id, type, front, back, known
+        id, type, front, back, imageBase64Back, known
       FROM cards
       WHERE
         type = ?

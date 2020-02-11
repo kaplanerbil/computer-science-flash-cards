@@ -3,7 +3,7 @@
 
     <div class="well editPanel">
         <h2>Add a Card</h2>
-        <form action="{{ url_for('add_card') }}" method="post" class="cardForm">
+        <form action="{{ url_for('add_card') }}" method="post" class="cardForm" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="general" class="toggleButton btn btn-default btn-lg">General &nbsp;
                     <input type="radio" name="type" value="1" id="general"/>
@@ -23,7 +23,12 @@
                           id="back"
                           placeholder="back of card"
                           rows="12"></textarea>
+                <textarea id="pasteTargetBack" placeholder="Paste Or Drag-Drop Image Here"></textarea>
+                <img id="pastedImageBack" ></img>
+                <input type="text" id="imageBase64Back" hidden name="imageBase64Back">
             </div>
+
+
             <div class="form-group">
                 <button type="submit" class="saveButton btn btn-lg btn-primary">Save</button>
             </div>
