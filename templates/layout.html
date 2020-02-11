@@ -107,6 +107,65 @@
      }
      return blob;
  }
+
+/* async function pasteBackFromClipboard() {
+     navigator.clipboard.read().then(data => {
+         for (var i=0; i<data.length; i++) {
+             if (data[i].types[0].indexOf("image") !== 0) {
+                 alert("Clipboard contains non-image data. Unable to access it.");
+             } else {
+
+                 // var blob = data[i].getAsFile();
+                 const blob = await data[i].getType(data[i].types[0]);
+                 // load image if there is a pasted image
+                 if (blob !== null) {
+                     var reader = new FileReader();
+                     reader.onload = function(event) {
+                         console.log(event.target.result); // data url!
+                         document.getElementById("pasteTargetBack").style.display = 'none';
+                         document.getElementById("pastedImageBack").src = event.target.result;
+                         document.getElementById("imageBase64Back").value = event.target.result;
+                     };
+                     reader.readAsDataURL(blob);
+                 }
+             }
+         }
+    });
+ }*/
+
+ async function pasteFromClipboard(backOrFront) {
+     try {
+         const clipboardItems = await navigator.clipboard.read();
+         for (const clipboardItem of clipboardItems) {
+             try {
+                 for (const type of clipboardItem.types) {
+                     if (type.indexOf("image") === 0) {
+                         const blob = await
+                         clipboardItem.getType(type);
+                         if (blob !== null) {
+                             var reader = new FileReader();
+                             reader.onload = function (event) {
+                                 console.log(event.target.result); // data url!
+                                 document.getElementById("pasteTarget" + backOrFront).style.display = 'none';
+                                 document.getElementById("pastedImage" + backOrFront).src = event.target.result;
+                                 document.getElementById("imageBase64" + backOrFront).value = event.target.result;
+                             };
+                             reader.readAsDataURL(blob);
+                         }
+                     }else {
+                         alert("Clipboard contains non-image data. Unable to access it.");
+                     }
+                 }
+             } catch (e) {
+                 console.error(e, e.message);
+             }
+         }
+     } catch (e) {
+         console.error(e, e.message);
+     }
+ }
+
+
     </script>
 </head>
 <body>
@@ -146,5 +205,24 @@
     <script src="https://use.fontawesome.com/8cea844162.js"></script>
     <script src="{{ url_for('static', filename='fastclick.min.js') }}"></script>
     <script src="{{ url_for('static', filename='general.js') }}"></script>
+
+<script>
+
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+
+</script>
 </body>
 </html>
