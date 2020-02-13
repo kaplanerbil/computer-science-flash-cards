@@ -73,6 +73,7 @@
      //        document.getElementById("pasteTargetFront").style.display = 'none';
              document.getElementById("pastedImageFront").src = event.target.result;
              document.getElementById("imageBase64Front").value = event.target.result;
+             divImageVisible("true", "Front");
          };
          reader.readAsDataURL(blob);
      }
@@ -89,6 +90,7 @@
       //       document.getElementById("pasteTargetBack").style.display = 'none';
              document.getElementById("pastedImageBack").src = event.target.result;
              document.getElementById("imageBase64Back").value = event.target.result;
+             divImageVisible("true", "Back");
          };
          reader.readAsDataURL(blob);
      }
@@ -108,6 +110,22 @@
      return blob;
  }
 
+ function removeImage(backOrFront){
+     document.getElementById("pastedImage"+backOrFront).src = "";
+     document.getElementById("imageBase64"+backOrFront).value = "";
+     divImageVisible("false", backOrFront);
+ }
+
+
+ function divImageVisible(show, backOrFront) {
+     if(show == "true") {
+         document.getElementById("divImage"+backOrFront).style.visibility='visible';
+     }
+     else {
+         document.getElementById("divImage"+backOrFront).style.visibility='hidden';
+     }
+ }
+
  async function pasteFromClipboard(backOrFront) {
      try {
          const clipboardItems = await navigator.clipboard.read();
@@ -121,7 +139,7 @@
                              var reader = new FileReader();
                              reader.onload = function (event) {
                                  console.log(event.target.result); // data url!
-                                 document.getElementById("pasteTarget" + backOrFront).style.display = 'none';
+                                 // document.getElementById("pasteTarget" + backOrFront).style.display = 'none';
                                  document.getElementById("pastedImage" + backOrFront).src = event.target.result;
                                  document.getElementById("imageBase64" + backOrFront).value = event.target.result;
                              };
@@ -197,6 +215,7 @@
             $(this).remove();
         }).appendTo('body');
     });
+
 
 </script>
 </body>

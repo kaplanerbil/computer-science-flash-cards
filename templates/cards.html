@@ -13,21 +13,30 @@
                 </label>
             </div>
             <div class="form-group fieldFront">
-                <label for="front">Front of Card</label>
-                <input type="text" name="front" id="front" class="form-control">
-                <img id="pastedImageFront" ></img>
-                <input type="text" id="imageBase64Front" hidden name="imageBase64Front">
+                <input type="text" name="front" id="front" class="form-control" placeholder="Front Of Card. Type OR Copy and Paste Image">
+                <div id="divImageFront" style="visibility: hidden">
+                    <a class="btn btn-danger btn-xs"onclick="removeImage('Front')">
+                        Remove Image
+                    </a>
+                    <img id="pastedImageFront" ></img>
+                    <input type="text" id="imageBase64Front" hidden name="imageBase64Front" >
+                </div>
 <!--                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Front')">-->
             </div>
-            <div class="form-group fieldBack">
+            <div class="form-group fieldBack" >
                 <label for="back">Back of Card</label>
                 <textarea name="back"
                           class="form-control"
                           id="back"
-                          placeholder="back of card"
+                          placeholder="Back Of Card. Type OR Copy and Paste Image"
                           rows="12"></textarea>
-                <img id="pastedImageBack" ></img>
-                <input type="text" id="imageBase64Back" hidden name="imageBase64Back">
+                <div id="divImageBack" style="visibility: hidden">
+                    <a class="btn btn-danger btn-xs"onclick="removeImage('Back')">
+                        Remove Image
+                    </a>
+                    <img id="pastedImageBack" ></img>
+                    <input type="text" id="imageBase64Back" hidden name="imageBase64Back" >
+                </div>
 <!--                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Back')">-->
             </div>
 

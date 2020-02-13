@@ -15,19 +15,29 @@
             </div>
             <div class="form-group">
                 <label for="front">Front of Card</label>
-                <input type="text" name="front" id="front" class="form-control" value="{{ card.front|e }}">
-                <img id="pastedImageFront"  src="{{ card.imageBase64Front }}"></img>
-                <input type="text" id="imageBase64Front" hidden name="imageBase64Front" value="{{ card.imageBase64Front }}">
+                <input type="text" name="front"  placeholder="Front Of Card. Type OR Copy and Paste Image" id="front" class="form-control" value="{{ card.front|e }}">
+                <div id="divImageFront" style="visibility: {{ "visible" if (card.imageBase64Front != None and card.imageBase64Front != "") else "hidden"}};">
+                    <a class="btn btn-danger btn-xs"onclick="removeImage('Front')">
+                        Remove Image
+                    </a>
+                    <img id="pastedImageFront"  src="{{ card.imageBase64Front }}"></img>
+                    <input type="text" id="imageBase64Front" hidden name="imageBase64Front" value="{{ card.imageBase64Front }}">
+                </div>
             </div>
             <div class="form-group">
                 <label for="back">Back of Card</label>
                 <textarea name="back"
                           class="form-control"
                           id="back"
-                          placeholder="back of card"
+                          placeholder="Back Of Card. Type OR Copy and Paste Image"
                           rows="12">{{ card.back|e }}</textarea>
-                <img id="pastedImageBack"  src="{{ card.imageBase64Back }}"></img>
-                <input type="text" id="imageBase64Back" hidden name="imageBase64Back" value="{{ card.imageBase64Back }}">
+                <div id="divImageBack" style="visibility: {{ "visible" if (card.imageBase64Back != None and card.imageBase64Back != "") else "hidden"}};">
+                    <a class="btn btn-danger btn-xs"onclick="removeImage('Back')">
+                        Remove Image
+                    </a>
+                    <img id="pastedImageBack"  src="{{ card.imageBase64Back }}"></img>
+                    <input type="text" id="imageBase64Back" hidden name="imageBase64Back" value="{{ card.imageBase64Back }}">
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-6">
