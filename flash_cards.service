@@ -3,12 +3,12 @@ Description=uWSGI instance to serve flash_cards
 After=network.target
 
 [Service]
-User=john
+User=kaplanerbil
 Group=www-data
 WorkingDirectory=/home/kaplanerbil/flashcardproject/flashcardenv/computer-science-flash-cards
 Environment="PATH=/home/kaplanerbil/flashcardproject/flashcardenv/bin"
 Environment="CARDS_SETTINGS=/home/kaplanerbil/flashcardproject/flashcardenv/config.txt"
-ExecStart=/home/kaplanerbil/flashcardproject/flashcardenv/bin/uwsgi --ini flash_cards.ini
+ExecStart=/home/kaplanerbil/flashcardproject/flashcardenv/bin/uwsgi --ini /home/kaplanerbil/flashcardproject/flashcardenv/computer-science-flash-cards/flash_cards.ini
 
 [Install]
 WantedBy=multi-user.target

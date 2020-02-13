@@ -69,7 +69,7 @@ def cards():
         return redirect(url_for('login'))
     db = get_db()
     query = '''
-        SELECT id, type, front, back, known
+        SELECT id, type, front, back, known, imageBase64Back, imageBase64Front
         FROM cards
         ORDER BY id DESC
     '''
@@ -97,7 +97,7 @@ def filter_cards(filter_name):
         return redirect(url_for('cards'))
 
     db = get_db()
-    fullquery = "SELECT id, type, front, back, known FROM cards " + query + " ORDER BY id DESC"
+    fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front FROM cards " + query + " ORDER BY id DESC"
     cur = db.execute(fullquery)
     cards = cur.fetchall()
     return render_template('cards.html', cards=cards, filter_name=filter_name)
@@ -162,7 +162,9 @@ def edit_card():
           type = ?,
           front = ?,
           back = ?,
-          known = ?
+          known = ?,
+          imageBase64Back = ?,
+          imageBase64Front = ?
         WHERE id = ?
     '''
     db.execute(command,
@@ -170,6 +172,8 @@ def edit_card():
                 request.form['front'],
                 request.form['back'],
                 known,
+                request.form['imageBase64Back'],
+                request.form['imageBase64Front'],
                 request.form['card_id']
                 ])
     db.commit()
@@ -249,7 +253,7 @@ def get_card_by_id(card_id):
 
     query = '''
       SELECT
-        id, type, front, back, known
+        id, type, front, back, known, imageBase64Back, imageBase64Front,
       FROM cards
       WHERE
         id = ?

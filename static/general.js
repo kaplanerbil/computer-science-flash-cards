@@ -21,7 +21,7 @@ $(document).ready(function(){
             var backTrim = $.trim($('#back').val());
             $('#back').val(backTrim);
 
-            if (! $('#front').val() || ! $('#back').val()) {
+            if (! $('#front').val() && ! $('#back').val() && ! $('#imageBase64Back').val() && ! $('#imageBase64Front').val()) {
                 return false;
             }
         });

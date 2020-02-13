@@ -15,10 +15,9 @@
             <div class="form-group fieldFront">
                 <label for="front">Front of Card</label>
                 <input type="text" name="front" id="front" class="form-control">
-                <textarea id="pasteTargetFront" placeholder="Paste Image Here"></textarea>
                 <img id="pastedImageFront" ></img>
                 <input type="text" id="imageBase64Front" hidden name="imageBase64Front">
-                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Front')">
+<!--                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Front')">-->
             </div>
             <div class="form-group fieldBack">
                 <label for="back">Back of Card</label>
@@ -27,11 +26,9 @@
                           id="back"
                           placeholder="back of card"
                           rows="12"></textarea>
-                <textarea id="pasteTargetBack" placeholder="Paste Image Here"></textarea>
                 <img id="pastedImageBack" ></img>
                 <input type="text" id="imageBase64Back" hidden name="imageBase64Back">
-                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Back')">
-                <canvas><p>canvas</p></canvas>
+<!--                <input type="button" value="Paste From Clipboard" class="btn btn-info" onclick="pasteFromClipboard('Back')">-->
             </div>
 
 
@@ -62,14 +59,22 @@
                     <a href="{{ url_for('edit', card_id=card.id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
                 </td>
                 <td class="cardContent">
-                    <h4>
+<!--                    <h4>-->
                         {{ card.front }}
-                    </h4>
+<!--                    </h4>-->
+                    {% if card.imageBase64Front != None %}aaa
+                        <img width="100" height="400" data-enlargable src="{{ card.imageBase64Front }}">
+                    {%  endif  %}
+
                     {% if card.type == 1 %}
                         {{ card.back|replace("\n", "<br />")|safe }}
                     {% else %}
                         <pre><code>{{ card.back|escape }}</code></pre>
                     {% endif %}
+
+                    {% if card.imageBase64Back != None %}
+                        <img width="%100" height="400" data-enlargable src="{{ card.imageBase64Back }}">
+                    {%  endif  %}
                 </td>
             </tr>
         {% else %}

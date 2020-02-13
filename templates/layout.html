@@ -48,10 +48,10 @@
         }*/
 
  document.addEventListener("DOMContentLoaded", function() {
-     var pasteTargetBack = document.getElementById("pasteTargetBack");
+     var pasteTargetBack = document.getElementById("back");
      pasteTargetBack.addEventListener("paste", handlePasteBack);
 
-     var pasteTargetFront = document.getElementById("pasteTargetFront");
+     var pasteTargetFront = document.getElementById("front");
      pasteTargetFront.addEventListener("paste", handlePasteFront);
      // pasteTarget.addEventListener("dragenter", handleDragEnter);
  });
@@ -70,7 +70,7 @@
          var reader = new FileReader();
          reader.onload = function(event) {
              console.log(event.target.result); // data url!
-             document.getElementById("pasteTargetFront").style.display = 'none';
+     //        document.getElementById("pasteTargetFront").style.display = 'none';
              document.getElementById("pastedImageFront").src = event.target.result;
              document.getElementById("imageBase64Front").value = event.target.result;
          };
@@ -86,7 +86,7 @@
          var reader = new FileReader();
          reader.onload = function(event) {
              console.log(event.target.result); // data url!
-             document.getElementById("pasteTargetBack").style.display = 'none';
+      //       document.getElementById("pasteTargetBack").style.display = 'none';
              document.getElementById("pastedImageBack").src = event.target.result;
              document.getElementById("imageBase64Back").value = event.target.result;
          };
@@ -107,31 +107,6 @@
      }
      return blob;
  }
-
-/* async function pasteBackFromClipboard() {
-     navigator.clipboard.read().then(data => {
-         for (var i=0; i<data.length; i++) {
-             if (data[i].types[0].indexOf("image") !== 0) {
-                 alert("Clipboard contains non-image data. Unable to access it.");
-             } else {
-
-                 // var blob = data[i].getAsFile();
-                 const blob = await data[i].getType(data[i].types[0]);
-                 // load image if there is a pasted image
-                 if (blob !== null) {
-                     var reader = new FileReader();
-                     reader.onload = function(event) {
-                         console.log(event.target.result); // data url!
-                         document.getElementById("pasteTargetBack").style.display = 'none';
-                         document.getElementById("pastedImageBack").src = event.target.result;
-                         document.getElementById("imageBase64Back").value = event.target.result;
-                     };
-                     reader.readAsDataURL(blob);
-                 }
-             }
-         }
-    });
- }*/
 
  async function pasteFromClipboard(backOrFront) {
      try {

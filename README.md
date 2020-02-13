@@ -87,6 +87,69 @@ Thanks [@eyedol](https://github.com/eyedol)
 1. When you're ready to start memorizing, click either "General" or "Code"
     in the top menu.
 
+
+
+#settings ubuntu-debian server installations from scratch
+sudo apt-get update
+apt install python
+sudo apt-get install python-pip python-dev nginx
+sudo pip install virtualenv
+mkdir ~/flashcardproject
+cd flashcardproject;
+virtualenv flashcardenv;
+source flashcardenv/bin/activate;
+pip install uwsgi flask;
+cd flashcardenv;
+sudo apt-get install git;
+git clone https://github.com/kaplanerbil/computer-science-flash-cards.git;
+cd computer-science-flash-cards;
+sudo apt install libcurl4-openssl-dev libssl-dev;
+pip install -r requirements.txt;
+
+?sudo ufw allow 5000;
+
+uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app &
+ 
+ #??HTTPS
+ #??sudo add-apt-repository ppa:certbot/certbot
+ #??sudo apt install python-certbot-nginx
+ 
+#nginx port forwarding
+ sudo nano /etc/nginx/sites-available/default
+ 
+ #change location part in default file. It's a config file for nginx 
+ ...
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+
+        # Enables WS support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_redirect off;
+    }
+...
+
+ sudo systemctl reload nginx
+ sudo systemctl start nginx
+ sudo systemctl status nginx
+ 
+ --define as a service
+ sudo touch /etc/systemd/system/flashcard.service
+ sudo nano /etc/systemd/system/flashcard.service
+ sudo systemctl daemon-reload
+ sudo systemctl restart flashcard
+ --service log check
+ journalctl -u flashcard.service
+ 
+ 
+ 
+
+
 ## How to run it on local host (Quick Guide)
 
 *Provided by [@devyash](https://github.com/devyash) - devyashsanghai@gmail.com - Reach out to this contributor if you have trouble.*
