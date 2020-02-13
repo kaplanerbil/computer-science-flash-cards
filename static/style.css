@@ -27,6 +27,10 @@ img {
     cursor: zoom-in;
 }
 
+.smallImageDiv {
+    width:100%;
+}
+
 .alignMiddle {
     height: 20em;
     display: table-cell;
