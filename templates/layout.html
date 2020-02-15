@@ -146,7 +146,7 @@
                 <br/>
                 <nav class="navbar navbar-default">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="{{ url_for('index') }}">CS Flash Cards</a>
+{#                        <a class="navbar-brand" href="{{ url_for('index') }}">CS Flash Cards</a>#}
 
                         <ul class="nav navbar-nav navbar-right">
                             {% if not session.logged_in %}
@@ -154,8 +154,8 @@
                             {% else %}
                                 <li><a href="{{ url_for('add') }}">Add Card</a></li>
                                 <li><a href="{{ url_for('cards') }}">Cards</a></li>
-                                <li><a href="{{ url_for('general') }}">General</a></li>
-                                <li><a href="{{ url_for('code') }}">Code</a></li>
+                                <li><a href="{{ url_for('general') }}">Practice</a></li>
+{#                                <li><a href="{{ url_for('code') }}">Code</a></li>#}
                                 <li><a href="{{ url_for('tags') }}">Tags</a></li>
                                 <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
                                 <li><a href="{{ url_for('logout') }}">Log out</a></li>

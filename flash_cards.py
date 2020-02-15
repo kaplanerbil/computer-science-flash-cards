@@ -76,19 +76,7 @@ def cards():
     cur = db.execute(query)
     cards = cur.fetchall()
 
-    querytags = '''
-        SELECT id, name
-        FROM tags
-    '''
-    cur = db.execute(querytags)
-    result = cur.fetchall()
-    tags = []
-    for row in result:
-        tags.append(row[1])
-
-    session['tags']=tags
-
-    return render_template('cards.html', cards=cards, filter_name="all", tags=tags)
+    return render_template('cards.html', cards=cards, filter_name="all")
 
 
 @app.route('/filter_cards/<filter_name>')
@@ -116,6 +104,8 @@ def filter_cards(filter_name, tag_name):
     fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag FROM cards " + query + " ORDER BY id DESC"
     cur = db.execute(fullquery)
     cards = cur.fetchall()
+    db.close()
+
     return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=tag_name)
 
 
@@ -150,6 +140,7 @@ def tags():
         '''
     cur = db.execute(notagcardscountsql)
     notagcardscount = cur.fetchone()
+    db.close()
 
     return render_template('tags.html', tags=tags, tagCounts=tagCounts, notagcardscount=notagcardscount[0])
 
@@ -182,6 +173,7 @@ def add_card():
                        [request.form['tag']])
 
     db.commit()
+    db.close()
     flash('New card was successfully added.')
     return redirect(url_for('cards'))
 
@@ -197,6 +189,7 @@ def edit(card_id):
     '''
     cur = db.execute(query, [card_id])
     card = cur.fetchone()
+    db.close()
 
     return render_template('edit.html', card=card, tags=session['tags'])
 
@@ -231,20 +224,12 @@ def edit_card():
                 request.form['card_id']
                 ])
 
-    if request.form['tag'].strip():
-        querytag = '''
-            SELECT id, name
-            FROM tags
-            WHERE name = ?
-        '''
-        cur = db.execute(querytag, [request.form['tag'].strip()])
-        result = cur.fetchone()
-
-        if not result:
-            db.execute('INSERT INTO tags (name) VALUES (?)',
-                       [request.form['tag']])
+    if not get_tag_by_id(request.form['tag']):
+        db.execute('INSERT INTO tags (name) VALUES (?)',
+                   [request.form['tag']])
 
     db.commit()
+    db.close()
     flash('Card saved.')
     return redirect(url_for('cards'))
 
@@ -256,6 +241,7 @@ def delete(card_id):
     db = get_db()
     db.execute('DELETE FROM cards WHERE id = ?', [card_id])
     db.commit()
+    db.close()
     flash('Card deleted.')
     return redirect(url_for('cards'))
 
@@ -272,7 +258,6 @@ def general(card_id=None):
 def add():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    print(session['tags'])
     return render_template('add.html', tags=session['tags'])
 
 
@@ -300,11 +285,42 @@ def memorize(card_type, card_id):
         flash("You've learned all the " + card_type + " cards.")
         return redirect(url_for('cards'))
     short_answer = (len(card['back']) < 75)
+
+    session['tags']=get_tags()
+
     return render_template('memorize.html',
                            card=card,
                            card_type=card_type,
                            short_answer=short_answer)
 
+
+def get_tags():
+    db = get_db();
+    querytags = '''
+            SELECT id, name
+            FROM tags
+        '''
+    cur = db.execute(querytags)
+    result = cur.fetchall()
+    db.close()
+
+    tags = []
+    for row in result:
+        tags.append(row[1])
+
+    return tags
+
+
+def get_tag_by_id(tag_id):
+    if tag_id.strip():
+        querytag = '''
+                SELECT id, name
+                FROM tags
+                WHERE name = ?
+            '''
+        db = get_db()
+        cur = db.execute(querytag, [request.form['tag'].strip()])
+        return cur.fetchone()
 
 def get_card(type):
     db = get_db()
