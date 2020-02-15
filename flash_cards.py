@@ -86,6 +86,8 @@ def cards():
     for row in result:
         tags.append(row[1])
 
+    session['tags']=tags
+
     return render_template('cards.html', cards=cards, filter_name="all", tags=tags)
 
 
@@ -196,17 +198,7 @@ def edit(card_id):
     cur = db.execute(query, [card_id])
     card = cur.fetchone()
 
-    querytags = '''
-        SELECT id, name
-        FROM tags
-    '''
-    cur = db.execute(querytags)
-    result = cur.fetchall()
-    tags = []
-    for row in result:
-        tags.append(row[1])
-
-    return render_template('edit.html', card=card, tags=tags)
+    return render_template('edit.html', card=card, tags=session['tags'])
 
 
 @app.route('/edit_card', methods=['POST'])
@@ -274,6 +266,15 @@ def general(card_id=None):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     return memorize("general", card_id)
+
+
+@app.route('/add')
+def add():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    print(session['tags'])
+    return render_template('add.html', tags=session['tags'])
+
 
 @app.route('/code')
 @app.route('/code/<card_id>')
