@@ -146,8 +146,8 @@ uwsgi --socket 0.0.0.0:5000 --protocol=http -w wsgi:app &
  --service log check
  journalctl -u flashcard.service
  
- 
- 
+ #backup cards.db as a tar.gz file with spesific name using timestamp and send in Email 
+nohup python3.6 backupAndSendEmailBatchJob.py  &
 
 
 ## How to run it on local host (Quick Guide)

@@ -63,3 +63,16 @@ img {
 .navbar-right {
   float: right!important;
 }
+
+
+.ui-autocomplete {
+    background: white;
+    border-radius: 0px;
+}
+.ui-autocomplete.source:hover {
+    background: lightskyblue;
+}
+
+.ui-menu .ui-menu-item a{-
+    height:20px;
+    font-size:18px;}

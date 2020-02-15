@@ -69,17 +69,29 @@ def cards():
         return redirect(url_for('login'))
     db = get_db()
     query = '''
-        SELECT id, type, front, back, known, imageBase64Back, imageBase64Front
+        SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag
         FROM cards
         ORDER BY id DESC
     '''
     cur = db.execute(query)
     cards = cur.fetchall()
-    return render_template('cards.html', cards=cards, filter_name="all")
+
+    querytags = '''
+        SELECT id, name
+        FROM tags
+    '''
+    cur = db.execute(querytags)
+    result = cur.fetchall()
+    tags = []
+    for row in result:
+        tags.append(row[1])
+
+    return render_template('cards.html', cards=cards, filter_name="all", tags=tags)
 
 
 @app.route('/filter_cards/<filter_name>')
-def filter_cards(filter_name):
+@app.route('/filter_cards/<filter_name>/<tag_name>')
+def filter_cards(filter_name, tag_name):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
@@ -89,6 +101,8 @@ def filter_cards(filter_name):
         "code":     "where type = 2",
         "known":    "where known = 1",
         "unknown":  "where known = 0",
+        "tag":      "where tag = '"+tag_name+"'",
+        "notag":    "where tag = '' or tag is null "
     }
 
     query = filters.get(filter_name)
@@ -97,10 +111,45 @@ def filter_cards(filter_name):
         return redirect(url_for('cards'))
 
     db = get_db()
-    fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front FROM cards " + query + " ORDER BY id DESC"
+    fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag FROM cards " + query + " ORDER BY id DESC"
     cur = db.execute(fullquery)
     cards = cur.fetchall()
-    return render_template('cards.html', cards=cards, filter_name=filter_name)
+    return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=tag_name)
+
+
+@app.route('/tags')
+def tags():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    querytags ='''
+        SELECT
+            name,
+            COUNT(cards.tag)
+        FROM
+        tags
+        LEFT JOIN cards ON cards.tag = tags.name
+        GROUP BY
+        tags.name
+    '''
+    db = get_db()
+    cur = db.execute(querytags)
+    result = cur.fetchall()
+    tags = []
+    tagCounts = []
+    for row in result:
+        tags.append(row[0])
+        tagCounts.append(str(row[1]))
+
+    notagcardscountsql = '''
+        SELECT count(0) 
+        FROM cards
+        WHERE tag is null or tag=''
+        '''
+    cur = db.execute(notagcardscountsql)
+    notagcardscount = cur.fetchone()
+
+    return render_template('tags.html', tags=tags, tagCounts=tagCounts, notagcardscount=notagcardscount[0])
 
 
 @app.route('/add', methods=['POST'])
@@ -108,29 +157,29 @@ def add_card():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     db = get_db()
-    db.execute('INSERT INTO cards (type, front, back, imageBase64Back, imageBase64Front) VALUES (?, ?, ?, ?, ?)',
+    db.execute('INSERT INTO cards (type, front, back, imageBase64Back, imageBase64Front, tag) VALUES (?, ?, ?, ?, ?, ?)',
                [request.form['type'],
                 request.form['front'],
                 request.form['back'],
                 request.form['imageBase64Back'],
-                request.form['imageBase64Front']
+                request.form['imageBase64Front'],
+                request.form['tag']
                 ])
+
+    if request.form['tag'].strip():
+        querytag = '''
+            SELECT id, name
+            FROM tags
+            WHERE name = ?
+        '''
+        cur = db.execute(querytag, [request.form['tag']])
+        result = cur.fetchone()
+
+        if not result:
+            db.execute('INSERT INTO tags (name) VALUES (?)',
+                       [request.form['tag']])
+
     db.commit()
-    flash('New card was successfully added.')
-    return redirect(url_for('cards'))
-
-
-@app.route('/upload', methods=['POST'])
-def upload_image():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    # db = get_db()
-    # db.execute('INSERT INTO cards (type, front, back) VALUES (?, ?, ?)',
-    #            [request.form['type'],
-    #             request.form['front'],
-    #             request.form['back']
-    #             ])
-    # db.commit()
     flash('New card was successfully added.')
     return redirect(url_for('cards'))
 
@@ -140,13 +189,24 @@ def edit(card_id):
         return redirect(url_for('login'))
     db = get_db()
     query = '''
-        SELECT id, type, front, back, imageBase64Back, imageBase64Front, known
+        SELECT id, type, front, back, imageBase64Back, imageBase64Front, known, tag
         FROM cards
         WHERE id = ?
     '''
     cur = db.execute(query, [card_id])
     card = cur.fetchone()
-    return render_template('edit.html', card=card)
+
+    querytags = '''
+        SELECT id, name
+        FROM tags
+    '''
+    cur = db.execute(querytags)
+    result = cur.fetchall()
+    tags = []
+    for row in result:
+        tags.append(row[1])
+
+    return render_template('edit.html', card=card, tags=tags)
 
 
 @app.route('/edit_card', methods=['POST'])
@@ -164,7 +224,8 @@ def edit_card():
           back = ?,
           known = ?,
           imageBase64Back = ?,
-          imageBase64Front = ?
+          imageBase64Front = ?,
+          tag = ?
         WHERE id = ?
     '''
     db.execute(command,
@@ -174,8 +235,23 @@ def edit_card():
                 known,
                 request.form['imageBase64Back'],
                 request.form['imageBase64Front'],
+                request.form['tag'],
                 request.form['card_id']
                 ])
+
+    if request.form['tag'].strip():
+        querytag = '''
+            SELECT id, name
+            FROM tags
+            WHERE name = ?
+        '''
+        cur = db.execute(querytag, [request.form['tag'].strip()])
+        result = cur.fetchone()
+
+        if not result:
+            db.execute('INSERT INTO tags (name) VALUES (?)',
+                       [request.form['tag']])
+
     db.commit()
     flash('Card saved.')
     return redirect(url_for('cards'))
@@ -198,7 +274,6 @@ def general(card_id=None):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     return memorize("general", card_id)
-
 
 @app.route('/code')
 @app.route('/code/<card_id>')

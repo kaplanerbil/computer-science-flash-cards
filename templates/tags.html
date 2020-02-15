@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+
+    <div class="page-header">
+        <h2>{{ tags|length }} Tag{{ '' if (tags|length == 1) else 's' }}</h2>
+    </div>
+
+    <table class="table">
+        <tr>
+            <td class="cardContent">
+                <a href="{{ url_for('filter_cards', filter_name="notag", tag_name="none") }}" >No tag cards({{ notagcardscount }})</a>
+            </td>
+        </tr>
+        {% for tag in tags %}
+            <tr>
+                <td class="cardContent">
+                    <a href="{{ url_for('filter_cards', filter_name="tag", tag_name=tag) }}" >{{ tag }} ({{ tagCounts[loop.index0] }})</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>
+                    <em>No tags to show.</em>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+{% endblock %}

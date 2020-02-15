@@ -45,6 +45,9 @@
                 <div class="panel-body">
                     <div class="alignContainer">
 <!--                        <img class="alignMiddle frontText">-->
+                            {% if card.tag %}
+                                Tag:{{ card.tag }}
+                            {% endif %}
                             {% if card.type == 1 %}
                                 {% if short_answer %}
                                     <div class="text-center largerText">
