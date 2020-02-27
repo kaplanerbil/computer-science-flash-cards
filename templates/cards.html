@@ -1,19 +1,29 @@
 {% extends "layout.html" %}
 {% block body %}
 
+    {%  if total_card_number %}
     <div class="page-header">
-        <h2>{{ cards|length }} Card{{ '' if (cards|length == 1) else 's' }}</h2>
+        <h2>{{ total_card_number[0] }} Card{{ '' if (total_card_number[0] == 1) else 's' }}</h2>
     </div>
+    {% endif %}
     <div class="btn-group btn-group-md" role="group" aria-label="filters">
-        <a href="{{ url_for('filter_cards', filter_name="all") }}" class="btn btn-{{ "primary" if filter_name == "all" else "default" }}">All</a>
-        <a href="{{ url_for('filter_cards', filter_name="general") }}" class="btn btn-{{ "primary" if filter_name == "general" else "default" }}">General</a>
-        <a href="{{ url_for('filter_cards', filter_name="code") }}" class="btn btn-{{ "primary" if filter_name == "code" else "default" }}">Code</a>
-        <a href="{{ url_for('filter_cards', filter_name="known") }}" class="btn btn-{{ "primary" if filter_name == "known" else "default" }}">Known</a>
-        <a href="{{ url_for('filter_cards', filter_name="unknown") }}" class="btn btn-{{ "primary" if filter_name == "unknown" else "default" }}">Unknown</a>
+        <a href="{{ url_for('filter_cards', filter_name="all", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "all" else "default" }}">All</a>
+        <a href="{{ url_for('filter_cards', filter_name="general", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "general" else "default" }}">General</a>
+        <a href="{{ url_for('filter_cards', filter_name="code", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "code" else "default" }}">Code</a>
+        <a href="{{ url_for('filter_cards', filter_name="known", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "known" else "default" }}">Known</a>
+        <a href="{{ url_for('filter_cards', filter_name="unknown", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "unknown" else "default" }}">Unknown</a>
     </div>
 
     <br />
     <br />
+
+    Page Number:
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="1") }}" class="btn btn-{{ "primary" if page == "1" else "default" }}">1</a>
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="2") }}" class="btn btn-{{ "primary" if page == "2" else "default" }}">2</a>
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="3") }}" class="btn btn-{{ "primary" if page == "3" else "default" }}">3</a>
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="4") }}" class="btn btn-{{ "primary" if page == "4" else "default" }}">4</a>
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="5") }}" class="btn btn-{{ "primary" if page == "5" else "default" }}">5</a>
+    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="6") }}" class="btn btn-{{ "primary" if page == "6" else "default" }}">6</a>
 
     <table class="table table-bordered">
         {% for card in cards %}
@@ -23,7 +33,7 @@
                 </td>
                 <td class="cardContent">
 <!--                    <h4>-->
-                        {{ card.front }}
+                        {{ card.front |replace("\n", "<br />")|safe }}
 <!--                    </h4>-->
                     {% if card.imageBase64Front != None %}
                         <div class="smallImageDiv">

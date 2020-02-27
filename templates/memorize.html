@@ -30,7 +30,7 @@
                     <div class="alignContainer">
                         <div class="alignMiddle frontText">
 <!--                            <h3 class="text-center">-->
-                                {{ card.front }}
+                                {{ card.front|replace("\n", "<br />")|safe }}
 <!--                            </h3>-->
                             {% if card.imageBase64Front != None %}
                             <div class = "gfg">

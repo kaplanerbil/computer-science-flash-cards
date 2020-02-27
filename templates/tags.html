@@ -8,13 +8,13 @@
     <table class="table">
         <tr>
             <td class="cardContent">
-                <a href="{{ url_for('filter_cards', filter_name="notag", tag_name="none") }}" >No tag cards({{ notagcardscount }})</a>
+                <a href="{{ url_for('filter_cards', filter_name="notag", filter_value="none", page=1) }}" >No tag cards({{ notagcardscount }})</a>
             </td>
         </tr>
         {% for tag in tags %}
             <tr>
                 <td class="cardContent">
-                    <a href="{{ url_for('filter_cards', filter_name="tag", tag_name=tag) }}" >{{ tag }} ({{ tagCounts[loop.index0] }})</a>
+                    <a href="{{ url_for('filter_cards', filter_name="tag", filter_value=tag, page=1) }}" >{{ tag }} ({{ tagCounts[loop.index0] }})</a>
                 </td>
             </tr>
         {% else %}

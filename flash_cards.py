@@ -5,6 +5,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+page_size = 10
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
@@ -71,17 +72,25 @@ def cards():
     query = '''
         SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag
         FROM cards
-        ORDER BY id DESC
+        ORDER BY id DESC limit '''+str(page_size)+''' offset 0
     '''
     cur = db.execute(query)
     cards = cur.fetchall()
 
-    return render_template('cards.html', cards=cards, filter_name="all")
+    return render_template('cards.html', cards=cards, filter_name="all", total_card_number=get_total_card_number())
 
 
-@app.route('/filter_cards/<filter_name>')
-@app.route('/filter_cards/<filter_name>/<tag_name>')
-def filter_cards(filter_name, tag_name):
+def get_total_card_number():
+    db = get_db()
+    querycount = '''
+            SELECT COUNT(id)
+            FROM cards
+        '''
+    cur = db.execute(querycount)
+    return cur.fetchone();
+
+@app.route('/filter_cards/<filter_name>/<filter_value>/<page>')
+def filter_cards(filter_name, filter_value, page):
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
@@ -91,22 +100,30 @@ def filter_cards(filter_name, tag_name):
         "code":     "where type = 2",
         "known":    "where known = 1",
         "unknown":  "where known = 0",
-        "tag":      "where tag = '"+tag_name+"'",
-        "notag":    "where tag = '' or tag is null "
+        "notag":    "where tag = '' or tag is null ",
+        "page":     " "
     }
 
     query = filters.get(filter_name)
 
     if not query:
-        return redirect(url_for('cards'))
+        query = ""
+    #     return redirect(url_for('cards'))
+
+    if filter_name == "tag" and filter_value != "-":
+        query = query + "where tag = '" + filter_value + "'"
+
+    offset = ((int(page))-1)*page_size
+    if page:
+        query = query + "  ORDER BY id DESC limit "+str(page_size)+" offset "+str(offset),
 
     db = get_db()
-    fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag FROM cards " + query + " ORDER BY id DESC"
+    fullquery = "SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag FROM cards " + query[0]
+
     cur = db.execute(fullquery)
     cards = cur.fetchall()
-    db.close()
 
-    return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=tag_name)
+    return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=filter_value, page=page)
 
 
 @app.route('/tags')
@@ -177,6 +194,38 @@ def add_card():
     flash('New card was successfully added.')
     return redirect(url_for('cards'))
 
+@app.route('/addfromextension', methods=['POST'])
+def add_card_for_extension():
+    db = get_db()
+    json = request.json
+    db.execute('INSERT INTO cards (type, front, back, imageBase64Back, imageBase64Front, tag) VALUES (?, ?, ?, ?, ?, ?)',
+               [json['type'],
+                json['front'],
+                json['back'],
+                json['imageBase64Back'],
+                json['imageBase64Front'],
+                json['tag']
+                ])
+
+    if json['tag'].strip():
+        querytag = '''
+            SELECT id, name
+            FROM tags
+            WHERE name = ?
+        '''
+        cur = db.execute(querytag, [json['tag']])
+        result = cur.fetchone()
+
+        if not result:
+            db.execute('INSERT INTO tags (name) VALUES (?)',
+                       [json['tag']])
+
+    db.commit()
+    db.close()
+    flash('New card was successfully added.')
+    return
+
+
 @app.route('/edit/<card_id>')
 def edit(card_id):
     if not session.get('logged_in'):
@@ -244,7 +293,6 @@ def delete(card_id):
     db.close()
     flash('Card deleted.')
     return redirect(url_for('cards'))
-
 
 @app.route('/general')
 @app.route('/general/<card_id>')

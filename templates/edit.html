@@ -18,7 +18,11 @@
             </div>
             <div class="form-group">
                 <label for="front">Front of Card</label>
-                <input type="text" name="front"  placeholder="Front Of Card. Type OR Copy and Paste Image" id="front" class="form-control" value="{{ card.front|e }}">
+                <textarea name="front"
+                          class="form-control"
+                          id="front"
+                          placeholder="Front Of Card. Type OR Copy and Paste Image"
+                          rows="12">{{ card.front|e }}</textarea>
                 <div id="divImageFront" style="visibility: {{ "visible" if (card.imageBase64Front != None and card.imageBase64Front != "") else "hidden"}};">
                     <a class="btn btn-danger btn-xs"onclick="removeImage('Front')">
                         Remove Image
