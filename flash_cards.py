@@ -79,7 +79,7 @@ def cards():
     cards = cur.fetchall()
 
     total_card_number=get_total_card_number()
-    page_number= math.ceil(total_card_number[0] / page_size)
+    page_number= int(math.ceil(total_card_number[0] / page_size))
 
     return render_template('cards.html', cards=cards, filter_name="all", total_card_number=total_card_number, page="1", page_size=page_number)
 
