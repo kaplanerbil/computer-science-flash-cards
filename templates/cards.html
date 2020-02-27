@@ -17,14 +17,10 @@
     <br />
     <br />
 
-    Page Number:
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="1") }}" class="btn btn-{{ "primary" if page == "1" else "default" }}">1</a>
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="2") }}" class="btn btn-{{ "primary" if page == "2" else "default" }}">2</a>
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="3") }}" class="btn btn-{{ "primary" if page == "3" else "default" }}">3</a>
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="4") }}" class="btn btn-{{ "primary" if page == "4" else "default" }}">4</a>
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="5") }}" class="btn btn-{{ "primary" if page == "5" else "default" }}">5</a>
-    <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page="6") }}" class="btn btn-{{ "primary" if page == "6" else "default" }}">6</a>
-
+    Page:
+    {% for i in range(1,(page_size+1))  %}
+        <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page=i) }}" class="btn btn-{{ "primary" if page == (i|string) else "default" }}">{{ i }}</a>
+    {% endfor %}
     <table class="table table-bordered">
         {% for card in cards %}
             <tr>

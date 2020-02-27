@@ -1,3 +1,4 @@
+import math
 import os
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
@@ -77,7 +78,10 @@ def cards():
     cur = db.execute(query)
     cards = cur.fetchall()
 
-    return render_template('cards.html', cards=cards, filter_name="all", total_card_number=get_total_card_number())
+    total_card_number=get_total_card_number()
+    page_number= int(math.ceil(total_card_number[0] / page_size))
+
+    return render_template('cards.html', cards=cards, filter_name="all", total_card_number=total_card_number, page="1", page_size=page_number)
 
 
 def get_total_card_number():
@@ -123,7 +127,14 @@ def filter_cards(filter_name, filter_value, page):
     cur = db.execute(fullquery)
     cards = cur.fetchall()
 
-    return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=filter_value, page=page)
+    if (filter_name == "tag" and filter_value == "-") or filter_name == "all":
+        card_number= get_total_card_number()[0]
+    else:
+        card_number=len(cards)
+
+    page_number= int(math.ceil(card_number / page_size))
+
+    return render_template('cards.html', cards=cards, filter_name=filter_name, tag_name=filter_value, page=page, page_size=page_number)
 
 
 @app.route('/tags')
