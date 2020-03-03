@@ -17,7 +17,7 @@ def send_email():
 
     ## FILE TO SEND AND ITS PATH
     filename = 'cards.db'
-    SourcePathName  = '/home/kaplanerbil/flashcardproject/flashcardenv/computer-science-flash-cards/db/'
+    SourcePathName  = '/home/kaplanerbil/flashcardproject2/venv/computer-science-flash-cards/db/'
     #SourcePathName  = 'D:\workspaces\IdeaProjects\computer-science-flash-cards\db/'
 
     #backup file with different name using timestamp
