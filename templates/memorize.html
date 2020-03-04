@@ -30,7 +30,7 @@
                     <div class="alignContainer">
                         <div class="alignMiddle frontText">
 <!--                            <h3 class="text-center">-->
-                                {{ card.front|replace("\n", "<br />")|safe }}
+                                {{ card.front|replace("\n", "<br />") }}
 <!--                            </h3>-->
                             {% if card.imageBase64Front != None %}
                             <div class = "gfg">
@@ -52,7 +52,7 @@
                                 {% if short_answer %}
                                     <div class="text-center largerText">
                                 {% endif %}
-                                    {{ card.back|replace("\n", "<br />")|safe }}
+                                    {{ card.back|replace("\n", "<br />") }}
                                 {% if short_answer %}
                                     </div>
                                 {% endif %}
