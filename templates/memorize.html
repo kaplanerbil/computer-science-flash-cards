@@ -30,7 +30,8 @@
                     <div class="alignContainer">
                         <div class="alignMiddle frontText">
 <!--                            <h3 class="text-center">-->
-                                {{ card.front|replace("\n", "<br />") }}
+<!--                                {{ card.front|replace("\n", "<br />") }}    -->
+                                {{ card.front|safe }}
 <!--                            </h3>-->
                             {% if card.imageBase64Front != None %}
                             <div class = "gfg">
@@ -48,6 +49,7 @@
                             {% if card.tag %}
                                 Tag:{{ card.tag }}
                             {% endif %}
+
                             {% if card.type == 1 %}
                                 {% if short_answer %}
                                     <div class="text-center largerText">
