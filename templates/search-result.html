@@ -1,0 +1,38 @@
+ {% for card in cards %}
+        <tr>
+            <td>
+                <a href="{{ url_for('edit', card_id=card.id) }}" class="btn btn-xs btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            </td>
+            <td class="cardContent">
+
+                {{ card.front | safe }}
+
+                {% if card.imageBase64Front != None %}
+                    <div class="smallImageDiv">
+                        <img data-enlargable src="{{ card.imageBase64Front }}">
+                    </div>
+                {%  endif  %}
+
+                <hr />
+
+                {% if card.type == 1 %}
+                    {{ card.back | safe }}
+                {% else %}
+                    <pre><code>{{ card.back | escape }}</code></pre>
+                {% endif %}
+
+                {% if card.imageBase64Back != None %}
+                    <div class="smallImageDiv">
+                        <img data-enlargable src="{{ card.imageBase64Back }}">
+                    </div>
+                {%  endif  %}
+
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>
+                <em>No cards to show.</em>
+            </td>
+        </tr>
+    {% endfor %}
