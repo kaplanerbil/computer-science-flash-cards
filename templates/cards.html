@@ -29,7 +29,8 @@
                 </td>
                 <td class="cardContent">
 <!--                    <h4>-->
-                        {{ card.front |replace("\n", "<br />") }}
+<!--                    {{ card.front |replace("\n", "<br />") }}  -->
+                        {{ card.front|safe }}
 <!--                    </h4>-->
                     {% if card.imageBase64Front != None %}
                         <div class="smallImageDiv">
