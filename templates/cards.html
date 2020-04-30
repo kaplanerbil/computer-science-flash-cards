@@ -12,6 +12,7 @@
         <a href="{{ url_for('filter_cards', filter_name="code", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "code" else "default" }}">Code</a>
         <a href="{{ url_for('filter_cards', filter_name="known", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "known" else "default" }}">Known</a>
         <a href="{{ url_for('filter_cards', filter_name="unknown", filter_value="-", page="1") }}" class="btn btn-{{ "primary" if filter_name == "unknown" else "default" }}">Unknown</a>
+        Search:<input type="text" id="search_form_input" placeholder="Content"></input>
     </div>
 
     <br />
@@ -21,7 +22,9 @@
     {% for i in range(1,(page_size+1))  %}
         <a href="{{ url_for('filter_cards', filter_name=(filter_name if(filter_name) else "-"), filter_value=(tag_name if(tag_name) else "-"), page=i) }}" class="btn btn-{{ "primary" if page == (i|string) else "default" }}">{{ i }}</a>
     {% endfor %}
-    <table class="table table-bordered">
+
+<table class="table table-bordered" id="search-result">
+
         {% for card in cards %}
             <tr>
                 <td>
@@ -64,6 +67,7 @@
                 </td>
             </tr>
         {% endfor %}
+
     </table>
 
 

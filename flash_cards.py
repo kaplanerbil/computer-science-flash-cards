@@ -83,13 +83,6 @@ def cards():
 
     return render_template('cards.html', cards=cards, filter_name="all", total_card_number=total_card_number, page="1", page_size=page_number)
 
-
-@app.route('/search')
-def search():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    return render_template('search.html')
-
 @app.route('/searchcards')
 def searchcards():
     if not session.get('logged_in'):
