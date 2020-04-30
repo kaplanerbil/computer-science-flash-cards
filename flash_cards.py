@@ -51,10 +51,10 @@ def close_db(error):
 
 # Uncomment and use this to initialize database, then comment it
 #   You can rerun it to pave the database and start over
-@app.route('/initdb')
-def initdb():
-        init_db()
-        return 'Initialized the database.'
+#  @app.route('/initdb')
+#        def initdb():
+#        init_db()
+#       return 'Initialized the database.'
 
 
 @app.route('/')
@@ -83,6 +83,32 @@ def cards():
 
     return render_template('cards.html', cards=cards, filter_name="all", total_card_number=total_card_number, page="1", page_size=page_number)
 
+
+@app.route('/search')
+def search():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    return render_template('search.html')
+
+@app.route('/searchcards')
+def searchcards():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    content = request.args.get('searchText')
+    db = get_db()
+    query = '''
+        SELECT id, type, front, back, known, imageBase64Back, imageBase64Front, tag
+        FROM cards
+        WHERE front like ? 
+        or back like ?
+        ORDER BY id DESC
+    '''
+    params = ('%' + content + '%', '%' + content + '%')
+    cur = db.execute(query, params)
+    cards = cur.fetchall()
+
+    return render_template('search-result.html', cards=cards)
 
 def get_total_card_number():
     db = get_db()

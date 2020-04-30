@@ -135,6 +135,13 @@
      }
  }
 
+ function highlight(content, text) {
+     var index = content.indexOf(text);
+     if (index >= 0) {
+         content = content.substring(0,index) + "<span class='highlight'>" + content.substring(index,index+text.length) + "</span>" + highlight(content.substring(index + text.length), text);
+     }
+     return content;
+ }
 
     </script>
 </head>
@@ -154,6 +161,7 @@
                             {% else %}
                                 <li><a href="{{ url_for('add') }}">Add Card</a></li>
                                 <li><a href="{{ url_for('cards') }}">Cards</a></li>
+                                <li><a href="{{ url_for('search') }}">Search Cards</a></li>
                                 <li><a href="{{ url_for('general') }}">Practice</a></li>
 {#                                <li><a href="{{ url_for('code') }}">Code</a></li>#}
                                 <li><a href="{{ url_for('tags') }}">Tags</a></li>
@@ -208,6 +216,23 @@
             });
         {%  endif %}
     } );
+
+    $("#search_form_input").keyup(function(){
+        var text = $(this).val();
+
+        $.ajax({
+            url: "/searchcards",
+            type: "get",
+            data: {searchText: text},
+            success: function(response) {
+                response = highlight(response, text);
+                $("#place_for_search").html(response);
+            },
+            error: function(xhr) {
+                //Do Something to handle error
+            }
+        });
+    });
 
 </script>
 </body>

@@ -30,7 +30,7 @@
                 <td class="cardContent">
 <!--                    <h4>-->
 <!--                    {{ card.front |replace("\n", "<br />") }}  -->
-                        {{ card.front|safe }}
+                        {{ card.front | truncate(500) |safe }}
 <!--                    </h4>-->
                     {% if card.imageBase64Front != None %}
                         <div class="smallImageDiv">
@@ -38,10 +38,15 @@
                         </div>
                     {%  endif  %}
 
+                    <hr />
+
+                    <br/>
+
                     {% if card.type == 1 %}
-                        {{ card.back|replace("\n", "<br />") }}
+<!--                        {{ card.back|replace("\n", "<br />") }}-->
+                            {{ card.back | truncate(500) | safe }}
                     {% else %}
-                        <pre><code>{{ card.back|escape }}</code></pre>
+                        <pre><code>{{ card.back | truncate(500) | escape }}</code></pre>
                     {% endif %}
 
                     {% if card.imageBase64Back != None %}
