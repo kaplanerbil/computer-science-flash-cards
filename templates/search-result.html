@@ -5,7 +5,7 @@
             </td>
             <td class="cardContent">
 
-                {{ card.front | safe }}
+                {{ card.front | replace("\n", "<br />") | safe }}
 
                 {% if card.imageBase64Front != None %}
                     <div class="smallImageDiv">
@@ -16,7 +16,7 @@
                 <hr />
 
                 {% if card.type == 1 %}
-                    {{ card.back | safe }}
+                    {{ card.back | replace("\n", "<br />") | safe }}
                 {% else %}
                     <pre><code>{{ card.back | escape }}</code></pre>
                 {% endif %}
